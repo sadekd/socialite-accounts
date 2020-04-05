@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+class CreateUsersSocialsAccountsTable extends Migration
+{
+    public function up()
+    {
+        Schema::create(config('socialite-multi-accounts.table_name'), function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id');
+            $table->string('provider_user_id');
+            $table->string('provider');
+            $table->timestamps();
+
+            $table->unique(['provider_user_id', 'provider']);
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists(config('socialite-multi-accounts.table_name'));
+    }
+}
